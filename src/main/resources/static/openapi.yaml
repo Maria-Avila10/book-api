@@ -1,0 +1,125 @@
+openapi: 3.1.0
+info:
+  title: Book API
+  description: API RESTful para la gestión de libros con validación de ISBN vía OpenLibrary.
+  version: 1.0.0
+  contact:
+    name: María Ximena Ávila Payares
+    url: https://github.com/Maria-Avila10/book-api
+
+servers:
+  - url: http://localhost:8080
+    description: Servidor local de desarrollo
+
+paths:
+  /books:
+    get:
+      summary: Listar todos los libros
+      responses:
+        '200':
+          description: Lista de libros
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Book'
+    post:
+      summary: Crear un nuevo libro
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookRequest'
+      responses:
+        '201':
+          description: Libro creado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+        '400':
+          description: Error en los datos enviados
+
+  /books/{id}:
+    get:
+      summary: Obtener libro por ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Libro encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+        '404':
+          description: Libro no encontrado
+    put:
+      summary: Actualizar libro por ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookRequest'
+      responses:
+        '200':
+          description: Libro actualizado
+        '404':
+          description: Libro no encontrado
+    delete:
+      summary: Eliminar libro por ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Libro eliminado exitosamente
+        '404':
+          description: Libro no encontrado
+
+components:
+  schemas:
+    Book:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        author:
+          type: string
+        isbn:
+          type: string
+        year:
+          type: integer
+      required: [id, title, author, isbn, year]
+
+    BookRequest:
+      type: object
+      properties:
+        title:
+          type: string
+        author:
+          type: string
+        isbn:
+          type: string
+        year:
+          type: integer
+      required: [title, author, isbn, year]
+
